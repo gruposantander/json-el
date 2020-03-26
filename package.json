@@ -1,0 +1,22 @@
+{
+  "name": "@santander/json-el",
+  "version": "0.0.1",
+  "description": "JSON expression language",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard",
+    "test:unit": "mocha test",
+    "test:coverage": "nyc npm run test:unit",
+    "test": "npm run lint && npm run test:coverage"
+  },
+  "author": "Santander",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.0",
+    "standard": "^14.3.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
