@@ -1,0 +1,60 @@
+[
+  {
+    "name": "Equals Operator: eq",
+    "tests": [
+      { "exp": { "eq": "Joe" }, "value": "Joe", "pass": true },
+      { "exp": { "eq": "JOE" }, "value": "Joe", "pass": true },
+      { "exp": { "eq": 123 }, "value": 123, "pass": true },
+      { "exp": { "eq": 123.45 }, "value": 123.45, "pass": true },
+      { "exp": { "eq": null }, "value": null, "pass": true },
+      { "exp": { "eq": true }, "value": true, "pass": true },
+      { "exp": { "eq": false }, "value": false, "pass": true },
+      { "exp": { "eq": "Joey" }, "value": "Joe", "pass": false },
+      { "exp": { "eq": false }, "value": null, "pass": false },
+      { "exp": { "eq": "1" }, "value": 1, "pass": false },
+      { "exp": { "eq": {} }, "value": {}, "pass": false },
+      { "exp": { "eq": [] }, "value": [], "pass": false }
+    ]
+  }, {
+    "name": "Included Operator: in",
+    "tests": [
+      { "exp": { "in": ["Joe", "Bob"] }, "value": "Joe", "pass": true },
+      { "exp": { "in": ["Joe", "Bob"] }, "value": "Bob", "pass": true },
+      { "exp": { "in": ["Joe", "Bob"] }, "value": "Ann", "pass": false }
+    ]
+  }, {
+    "name": "Greater Than Operator: gt",
+    "tests": [
+      { "exp": { "gt": 3 }, "value": 9, "pass": true },
+      { "exp": { "gt": "B" }, "value": "C", "pass": true },
+      { "exp": { "gt": 10 }, "value": 10, "pass": false },
+      { "exp": { "gt": "Z" }, "value": "C", "pass": false }
+    ]
+  }, {
+    "name": "Less Than Operator: lt",
+    "tests": [
+      { "exp": { "lt": 10 }, "value": 9, "pass": true },
+      { "exp": { "lt": "Z" }, "value": "C", "pass": true },
+      { "exp": { "lt": 4 }, "value": 9, "pass": false },
+      { "exp": { "lt": "C" }, "value": "C", "pass": false }
+    ]
+  }, {
+    "name": "Greater Than or Equals Operator: gte",
+    "tests": [
+      { "exp": { "gte": 3 }, "value": 9, "pass": true },
+      { "exp": { "gte": 9 }, "value": 9, "pass": true },
+      { "exp": { "gte": "C" }, "value": "D", "pass": true },
+      { "exp": { "gte": 9 }, "value": 4, "pass": false },
+      { "exp": { "gte": "C" }, "value": "A", "pass": false }
+    ]
+  }, {
+    "name": "Less Than or Equals Operator: gte",
+    "tests": [
+      { "exp": { "lte": 4 }, "value": 2, "pass": true },
+      { "exp": { "lte": 3 }, "value": 3, "pass": true },
+      { "exp": { "lte": "C" }, "value": "A", "pass": true },
+      { "exp": { "lte": 1 }, "value": 2, "pass": false },
+      { "exp": { "lte": "C" }, "value": "D", "pass": false }
+    ]
+  }
+]

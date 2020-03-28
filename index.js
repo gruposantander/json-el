@@ -1,18 +1,18 @@
 'use strict'
 
-class UnknownOperatorError extends Error {
+class UnknownOperatorException extends Error {
   constructor (operator) {
     super('unknown operator: ' + operator)
     this.name = this.constructor.name
   }
 }
 
-const converters = new Map([
+const types = new Map([
   ['decimal', (value) => Number.parseFloat(value)]
 ])
 
 function convertTo (value, { type }) {
-  const converter = converters.get(type)
+  const converter = types.get(type)
   return converter ? converter(value) : value
 }
 
@@ -33,6 +33,7 @@ const operators = new Map([
   ['lt', (test) => (value) => value < test],
   ['gte', (test) => (value) => value >= test],
   ['lte', (test) => (value) => value <= test],
+  ['in', (test) => (value) => test.includes(value)],
   ['props', propsFn]
 ])
 
@@ -45,7 +46,7 @@ function compile (source, schema = { type: 'unknown' }) {
   for (const [name, value] of entries) {
     const fn = operators.get(name)
     if (fn === undefined) {
-      throw new UnknownOperatorError(name)
+      throw new UnknownOperatorException(name)
     }
     tests.push(fn(convertTo(value, schema), schema))
   }
@@ -58,6 +59,7 @@ function compile (source, schema = { type: 'unknown' }) {
 
 module.exports = {
   compile,
-  converters,
-  UnknownOperatorError
+  types,
+  operators,
+  UnknownOperatorException
 }
