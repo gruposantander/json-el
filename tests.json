@@ -57,6 +57,12 @@
       { "exp": { "lte": "C" }, "value": "D", "pass": false }
     ]
   }, {
+    "name": "Or Operator: or",
+    "tests": [
+      { "exp": { "or": [{ "gt": 4, "lt": 9 }, { "gt": 39, "lt": 42 }] }, "value": 5, "pass": true },
+      { "exp": { "or": [{ "gt": 4, "lt": 9 }, { "gt": 39, "lt": 42 }] }, "value": 10, "pass": false }
+    ]
+  }, {
     "name": "Complex claims and schemas",
     "tests": [{
       "exp": { "props": { "amount" : { "gt": "1000.00" } } },
