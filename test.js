@@ -170,7 +170,7 @@ describe('JSON Expression Language', function () {
         ],
         {
           type: 'object',
-          properties: {
+          props: {
             currency: { type: 'string' },
             amount: { type: 'decimal' }
           }

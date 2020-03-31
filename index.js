@@ -17,7 +17,7 @@ function convertTo (value, { type }) {
 }
 
 function propsFn (props, schema) {
-  const schemas = (schema.type === 'object' && schema.properties) || {}
+  const schemas = (schema.type === 'object' && schema.props) || {}
   const tests = Object.entries(props)
     .map(([key, test]) => [key, compile(test, schemas[key])])
     .map(([key, compiled]) => (value) => compiled(value[key]))

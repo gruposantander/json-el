@@ -56,5 +56,19 @@
       { "exp": { "lte": 1 }, "value": 2, "pass": false },
       { "exp": { "lte": "C" }, "value": "D", "pass": false }
     ]
+  }, {
+    "name": "Complex claims and schemas",
+    "tests": [{
+      "exp": { "props": { "amount" : { "gt": "1000.00" } } },
+      "type": { "type": "object", "props": { "amount" : { "type": "decimal" }, "currency": { "type": "string" } } },
+      "value": { "amount": "1000.01", "currency": "GBP" },
+      "pass": true
+    }, {
+      "exp": { "props": { "amount" : { "gt": "1000.00" } } },
+      "type": { "type": "object", "props": { "amount" : { "type": "decimal" }, "currency": { "type": "string" } } },
+      "value": { "amount": "200.01", "currency": "GBP" },
+      "pass": false
+    }
+  ]
   }
 ]
