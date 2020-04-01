@@ -2,7 +2,7 @@
 
 const { describe, it, it: they } = require('mocha')
 const { deepEqual, throws, equal } = require('assert').strict
-const { UnknownOperatorException, compile } = require('.')
+const { UnknownOperatorException, UnknownTypeException, compile } = require('.')
 
 describe('JSON Expression Language', function () {
   function pass (expression, value, type) {
@@ -30,7 +30,6 @@ describe('JSON Expression Language', function () {
     })
   }
 
-  it('should produce and error if the type is missing')
   describe('Compile method', function () {
     it('should fail if the expression is not an object', function () {
       const checkError = (err) => {
@@ -41,6 +40,24 @@ describe('JSON Expression Language', function () {
       throws(() => compile(undefined), checkError)
       throws(() => compile(-1), checkError)
       throws(() => compile([]), checkError)
+    })
+
+    it('should produce and error if the type is missing', function () {
+      throws(() => compile({ eq: 0 }, { type: 'banana' }), (err) => {
+        equal(err instanceof UnknownTypeException, true)
+        equal(err.name, 'UnknownTypeException')
+        equal(err.message, 'unknown type: banana')
+        return true
+      })
+    })
+
+    it('should fail if there is an unknown operator', function () {
+      throws(() => compile({ unknown_operator: 'Joe' }), (err) => {
+        equal(err instanceof UnknownOperatorException, true)
+        equal(err.name, 'UnknownOperatorException')
+        equal(err.message, 'unknown operator: unknown_operator')
+        return true
+      })
     })
   })
   describe('eq operator', function () {
@@ -98,16 +115,6 @@ describe('JSON Expression Language', function () {
       check([null], {}, [null])
       // TODO check([undefined], {}, [])
       check([], {}, [])
-    })
-  })
-  describe('Unknown operators', function () {
-    it('should fail if there is an unknown operator', function () {
-      throws(() => compile({ unknown_operator: 'Joe' }), (error) => {
-        equal(error instanceof UnknownOperatorException, true)
-        equal(error.name, 'UnknownOperatorException')
-        equal(error.message, 'unknown operator: unknown_operator')
-        return true
-      })
     })
   })
 

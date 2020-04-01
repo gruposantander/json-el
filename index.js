@@ -7,13 +7,30 @@ class UnknownOperatorException extends Error {
   }
 }
 
+class UnknownTypeException extends Error {
+  constructor (operator) {
+    super('unknown type: ' + operator)
+    this.name = this.constructor.name
+  }
+}
+
+const identity = (t) => t
+
 const types = new Map([
-  ['decimal', (value) => Number.parseFloat(value)]
+  ['decimal', (value) => Number.parseFloat(value)],
+  ['number', identity],
+  ['string', identity],
+  ['object', identity],
+  ['date', identity],
+  ['any', identity]
 ])
 
 function convertTo (value, { type }) {
   const converter = types.get(type)
-  return converter ? converter(value) : value
+  if (!converter) {
+    throw new UnknownTypeException(type)
+  }
+  return converter(value)
 }
 
 function propsFn (props, schema) {
@@ -31,6 +48,7 @@ function onFn (tests, schema) {
 }
 
 const operators = new Map([
+  // TODO The lower case conversion should be done in the converter
   ['eq', (test) => (value) => value === test ||
     (typeof value === 'string' && typeof test === 'string' &&
     value.toUpperCase() === test.toUpperCase())],
@@ -43,11 +61,11 @@ const operators = new Map([
   ['props', propsFn]
 ])
 
-function compile (source, schema = { type: 'unknown' }) {
-  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+function compile (expression, schema = { type: 'any' }) {
+  if (!expression || typeof expression !== 'object' || Array.isArray(expression)) {
     throw SyntaxError('expression should be an object')
   }
-  const entries = Object.entries(source)
+  const entries = Object.entries(expression)
   const tests = []
   for (const [name, value] of entries) {
     const fn = operators.get(name)
@@ -67,5 +85,6 @@ module.exports = {
   compile,
   types,
   operators,
-  UnknownOperatorException
+  UnknownOperatorException,
+  UnknownTypeException
 }
