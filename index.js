@@ -61,6 +61,13 @@ const operators = new Map([
   ['props', propsFn]
 ])
 
+/**
+ * It compiles the expression and returns a function.
+ * @param {*} expression
+ * @param {*} schema
+ * @return {Function}
+ */
+
 function compile (expression, schema = { type: 'any' }) {
   if (!expression || typeof expression !== 'object' || Array.isArray(expression)) {
     throw SyntaxError('expression should be an object')
