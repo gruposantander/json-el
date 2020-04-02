@@ -42,7 +42,7 @@ function propsFn (props, schema) {
   return (value) => tests.every((test) => test(value))
 }
 
-function onFn (tests, schema) {
+function orFn (tests, schema) {
   const compiled = tests.map((test) => compile(test, schema))
   return (value) => compiled.some((fn) => fn(value))
 }
@@ -57,7 +57,7 @@ const operators = new Map([
   ['gte', (test) => (value) => value >= test],
   ['lte', (test) => (value) => value <= test],
   ['in', (test) => (value) => test.includes(value)],
-  ['or', onFn],
+  ['or', orFn],
   ['props', propsFn]
 ])
 
