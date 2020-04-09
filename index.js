@@ -21,6 +21,7 @@ const types = new Map([
   ['number', identity],
   ['string', identity],
   ['object', identity],
+  ['array', identity],
   ['date', identity],
   ['any', identity]
 ])
@@ -43,8 +44,23 @@ function propsFn (props, schema) {
 }
 
 function orFn (tests, schema) {
-  const compiled = tests.map((test) => compile(test, schema))
+  const compiled = tests.map((test) => compile(test, schema.items))
   return (value) => compiled.some((fn) => fn(value))
+}
+
+function someFn (test, schema) {
+  const compiled = compile(test, schema.items)
+  return (values) => values.some((value) => compiled(value))
+}
+
+function everyFn (test, schema) {
+  const compiled = compile(test, schema.items)
+  return (values) => values.every((value) => compiled(value))
+}
+
+function noneFn (test, schema) {
+  const compiled = compile(test, schema.items)
+  return (values) => !values.some((value) => compiled(value))
 }
 
 const operators = new Map([
@@ -58,6 +74,9 @@ const operators = new Map([
   ['lte', (test) => (value) => value <= test],
   ['in', (test) => (value) => test.includes(value)],
   ['or', orFn],
+  ['some', someFn],
+  ['every', everyFn],
+  ['none', noneFn],
   ['props', propsFn]
 ])
 

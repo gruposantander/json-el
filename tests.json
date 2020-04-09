@@ -74,7 +74,69 @@
       "type": { "type": "object", "props": { "amount" : { "type": "decimal" }, "currency": { "type": "string" } } },
       "value": { "amount": "200.01", "currency": "GBP" },
       "pass": false
-    }
-  ]
+    }]
+  }, {
+    "name": "Some Operator: some",
+    "tests": [{
+      "exp": { "some": { "eq": 1 } },
+      "value": [2, 3, 1],
+      "pass": true
+    }, {
+      "exp": { "some": { "eq": 1 } },
+      "value": [2, 3, 4],
+      "pass": false
+    }, {
+      "exp": { "some": { "eq": 1 } },
+      "value": [],
+      "pass": false
+    }]
+  }, {
+    "name": "Every Operator: every",
+    "tests": [{
+      "exp": { "every": { "eq": 1 } },
+      "value": [1, 1, 1],
+      "pass": true
+    }, {
+      "exp": { "every": { "eq": 1 } },
+      "value": [],
+      "pass": true
+    }, {
+      "exp": { "every": { "eq": 1 } },
+      "value": [1, 1, 4],
+      "pass": false
+    }]
+  }, {
+    "name": "None Operator: none",
+    "tests": [{
+      "exp": { "none": { "eq": 1 } },
+      "value": [2, 3, 5],
+      "pass": true
+    }, {
+      "exp": { "none": { "eq": 1 } },
+      "value": [],
+      "pass": true
+    }, {
+      "exp": { "none": { "eq": 1 } },
+      "value": [1, 3, 4],
+      "pass": false
+    }]
+  }, {
+    "name": "Arrays and Schemas",
+    "tests": [{
+      "exp": { "every": { "gt": "200.00" } },
+      "type": { "type": "array", "items": { "type": "decimal" } },
+      "value": ["200.01", "1200.00"],
+      "pass": true
+    }, {
+      "exp": { "none": { "gt": "200.00" } },
+      "type": { "type": "array", "items": { "type": "decimal" } },
+      "value": ["3.01", "1.00"],
+      "pass": true
+    }, {
+      "exp": { "some": { "gt": "200.00" } },
+      "type": { "type": "array", "items": { "type": "decimal" } },
+      "value": ["1.01", "1200.00"],
+      "pass": true
+    }]
   }
 ]
