@@ -1,6 +1,6 @@
 {
   "name": "@gruposantander/json-el",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "JSON expression language",
   "main": "index.js",
   "scripts": {
