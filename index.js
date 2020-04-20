@@ -65,9 +65,7 @@ function noneFn (test, schema) {
 
 const operators = new Map([
   // TODO The lower case conversion should be done in the converter
-  ['eq', (test) => (value) => value === test ||
-    (typeof value === 'string' && typeof test === 'string' &&
-    value.toUpperCase() === test.toUpperCase())],
+  ['eq', (test) => (value) => value === test],
   ['gt', (test) => (value) => value > test],
   ['lt', (test) => (value) => value < test],
   ['gte', (test) => (value) => value >= test],

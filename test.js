@@ -16,19 +16,24 @@ describe('JSON Expression Language', function () {
     deepEqual(values.filter(compiled), expectation)
   }
 
-  const suites = require('./tests')
+  const rootSuite = require('./suite.json')
 
-  for (const suite of suites) {
-    const { name, tests } = suite
-    describe(name, function () {
-      for (const test of tests) {
-        const { pass, exp, value, type } = test
-        it(JSON.stringify(test), function () {
-          equal(compile(exp, type)(value), pass)
-        })
-      }
+  function processTest (test) {
+    const { pass = true, exp, value, type } = test
+    it(JSON.stringify(test), function () {
+      equal(compile(exp, type)(value), pass)
     })
   }
+
+  function processSuite (suite) {
+    const { name, suites = [], tests = [] } = suite
+    describe(name, function () {
+      suites.forEach(processSuite)
+      tests.forEach(processTest)
+    })
+  }
+
+  processSuite(rootSuite)
 
   describe('Compile method', function () {
     it('should fail if the expression is not an object', function () {
@@ -61,10 +66,6 @@ describe('JSON Expression Language', function () {
     })
   })
   describe('eq operator', function () {
-    it('should return true if the value is equal to given value(ignore case)', function () {
-      check([{ foo: true }], { props: { foo: { eq: true } } }, [{ foo: true }])
-    })
-
     it.skip('should match undefined', function () {
       pass({ eq: undefined }, undefined)
     })
@@ -79,33 +80,6 @@ describe('JSON Expression Language', function () {
 
     it('should return false otherwise', function () {
       check([{ foo: true }], { props: { foo: { eq: false } } }, [])
-    })
-
-    it('should support schemas', function () {
-      pass({ eq: '123.0' }, '123', { type: 'decimal' })
-      check(['123.00', '123', '123.01'], { eq: '123.0' }, ['123.00', '123'], { type: 'decimal' })
-      check(['1979-04-04', '1982-02-01'], { eq: '1979-04-04' }, ['1979-04-04'], { type: 'date' })
-      check([12, 13], { eq: 12 }, [12], { type: 'number' })
-      check(['123.00'], { gt: '5' }, ['123.00'], { type: 'decimal' })
-      check(['123.00'], { gt: '1100' }, [], { type: 'decimal' })
-      check(['1979-04-04'], { gt: '1970-01-01' }, ['1979-04-04'], { type: 'date' })
-      check(['1979-04-04'], { gt: '2000-01-01' }, [], { type: 'date' })
-      check([12, 13], { gt: 12 }, [13], { type: 'number' })
-      check(['123.00'], { lt: '1100' }, ['123.00'], { type: 'decimal' })
-      check(['123.00'], { lt: '5' }, [], { type: 'decimal' })
-      check(['1979-04-04'], { lt: '2000-01-01' }, ['1979-04-04'], { type: 'date' })
-      check(['1979-04-04'], { lt: '1970-01-01' }, [], { type: 'date' })
-      check([12, 13], { lt: 13 }, [12], { type: 'number' })
-      check(['123.00'], { gte: '5' }, ['123.00'], { type: 'decimal' })
-      check(['123.00'], { gte: '1100' }, [], { type: 'decimal' })
-      check(['1979-04-04'], { gte: '1970-01-01' }, ['1979-04-04'], { type: 'date' })
-      check(['1979-04-04'], { gte: '2000-01-01' }, [], { type: 'date' })
-      check([11, 12, 13], { gte: 12 }, [12, 13], { type: 'number' })
-      check(['123.00'], { lte: '1100' }, ['123.00'], { type: 'decimal' })
-      check(['123.00'], { lte: '5' }, [], { type: 'decimal' })
-      check(['1979-04-04'], { lte: '2000-01-01' }, ['1979-04-04'], { type: 'date' })
-      check(['1979-04-04'], { lte: '1970-01-01' }, [], { type: 'date' })
-      check([11, 12, 13], { lte: 12 }, [11, 12], { type: 'number' })
     })
   })
 
@@ -161,28 +135,6 @@ describe('JSON Expression Language', function () {
       // Existence
       check([{ foo: 'yes' }], { props: { foo: {} } }, [{ foo: 'yes' }])
       // TODO check([{ foo: 'yes' }], { props: { bar: {} } }, [])
-    })
-    they('should follow the schema deeply', function () {
-      check(
-        [
-          { currency: 'GBP', amount: '123.00' },
-          { currency: 'GBP', amount: '123.01' },
-          { currency: 'GBP', amount: '123.0' },
-          { currency: 'EUR', amount: '123' }
-        ],
-        { props: { currency: { eq: 'GBP' }, amount: { eq: '123' } } },
-        [
-          { currency: 'GBP', amount: '123.00' },
-          { currency: 'GBP', amount: '123.0' }
-        ],
-        {
-          type: 'object',
-          props: {
-            currency: { type: 'string' },
-            amount: { type: 'decimal' }
-          }
-        }
-      )
     })
   })
 })
